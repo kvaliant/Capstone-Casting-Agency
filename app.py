@@ -1,4 +1,5 @@
 import os
+from models import setup_db, db, Movie, Actor
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -6,11 +7,135 @@ from flask_cors import CORS
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
+  setup_db(app)
   CORS(app)
+  
+  '''
+  GET /actors and /movies 
+  '''
+  @app.route('/actors', methods = ['GET'])
+  def get_actors():
+    actors = Actor.query.all()
+    formatted_actors = [actor.format() for actor in actors]
+    return jsonify({
+      'success': True,
+      'actors':formatted_actors
+      })
+
+  @app.route('/movies', methods = ['GET'])
+  def get_movies():
+    movies = Movie.query.all()
+    formatted_movies = [movie.format() for movie in movies]
+    return jsonify({
+      'success':True,
+      'movies':formatted_movies
+      })
+
+  '''
+  POST /actors and /movies 
+  '''
+  @app.route('/actors', methods = ['POST'])
+  def post_actor():
+    data = request.get_json()
+    name = data["name"]
+    age = data["age"]
+    gender = data["gender"]
+    actor = Actor(name = name, age= age, gender=gender)
+    actor.insert()
+    formatted_actor = actor.format()
+    return jsonify({
+      'success': True,
+      'actor':formatted_actor
+      })
+
+  @app.route('/movies', methods = ['POST'])
+  def post_movie():
+    data = request.get_json()
+    title = data["title"]
+    release_date = data["release_date"]
+    movie = Movie(title = title, release_date= release_date)
+    movie.insert()
+    formatted_movie = movie.format()
+    return jsonify({
+      'success': True,
+      'movie':formatted_movie
+      })
+
+  '''
+  PATCH /actors and /movies 
+  '''
+  @app.route('/actors/<int:actor_id>', methods = ['PATCH'])
+  def patch_actor(actor_id):
+    data = request.get_json()
+    actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+    try:
+      name = data["name"]
+      actor.name = name
+    except:
+      None
+    try:
+      age = data["age"]
+      actor.age = age
+    except:
+      None
+    try:
+      gender = data["gender"]
+      actor.gender = gender
+    except:
+      None
+    actor.update()
+    formatted_actor = actor.format()
+    return jsonify({
+      'success': True,
+      'actor':formatted_actor
+      })
+
+  @app.route('/movies/<int:movie_id>', methods = ['PATCH'])
+  def patch_movie(movie_id):
+    data = request.get_json()
+    movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+    try:
+      title = data["title"]
+      movie.title = title
+    except:
+      None
+    try:
+      release_date = data["release_date"]
+      movie.release_date = release_date
+    except:
+      None
+    movie.update()
+    formatted_movie = movie.format()
+    return jsonify({
+      'success': True,
+      'movie':formatted_movie
+      })
+  '''
+  DELETE /actors and /movies 
+  '''
+  @app.route('/actors/<int:actor_id>', methods = ['DELETE'])
+  def delete_actor(actor_id):
+    data = request.get_json()
+    actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+    actor.delete()
+    return jsonify({
+      'success': True,
+      'deleted':1
+      })
+
+  @app.route('/movies/<int:movie_id>', methods = ['DELETE'])
+  def delete_movie(movie_id):
+    data = request.get_json()
+    movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+    movie.delete()
+    return jsonify({
+      'success': True,
+      'deleted':1
+      })
 
   return app
 
 APP = create_app()
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+  APP.run(host='0.0.0.0', port=8080, debug=True)
