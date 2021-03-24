@@ -36,80 +36,101 @@ def create_app(test_config=None):
   '''
   @app.route('/actors', methods = ['POST'])
   def post_actor():
-    data = request.get_json()
-    name = data["name"]
-    age = data["age"]
-    gender = data["gender"]
-    actor = Actor(name = name, age= age, gender=gender)
-    actor.insert()
-    formatted_actor = actor.format()
-    return jsonify({
-      'success': True,
-      'actor':formatted_actor
-      })
+    try:
+      data = request.get_json()
+      name = data["name"]
+      age = data["age"]
+      gender = data["gender"]
+      actor = Actor(name = name, age= age, gender=gender)
+      actor.insert()
+      formatted_actor = actor.format()
+      return jsonify({
+        'success': True,
+        'actor':formatted_actor
+        })
+    except:
+      abort(422)
 
   @app.route('/movies', methods = ['POST'])
   def post_movie():
-    data = request.get_json()
-    title = data["title"]
-    release_date = data["release_date"]
-    movie = Movie(title = title, release_date= release_date)
-    movie.insert()
-    formatted_movie = movie.format()
-    return jsonify({
-      'success': True,
-      'movie':formatted_movie
-      })
-
+    try:
+      data = request.get_json()
+      title = data["title"]
+      release_date = data["release_date"]
+      movie = Movie(title = title, release_date= release_date)
+      movie.insert()
+      formatted_movie = movie.format()
+      return jsonify({
+        'success': True,
+        'movie':formatted_movie
+        })
+    except:
+      abort(422)
   '''
   PATCH /actors and /movies 
   '''
   @app.route('/actors/<int:actor_id>', methods = ['PATCH'])
   def patch_actor(actor_id):
-    data = request.get_json()
-    actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
     try:
-      name = data["name"]
-      actor.name = name
+      data = request.get_json()
+      actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+      if actor == None:
+        abort(404)
+      try:
+        name = data["name"]
+        actor.name = name
+      except:
+        None
+      try:
+        age = data["age"]
+        actor.age = age
+      except:
+        None
+      try:
+        gender = data["gender"]
+        actor.gender = gender
+      except:
+        None
+      try:
+        actor.update()
+      except:
+        abort(422)
+      formatted_actor = actor.format()
+      return jsonify({
+        'success': True,
+        'actor':formatted_actor
+        })
     except:
-      None
-    try:
-      age = data["age"]
-      actor.age = age
-    except:
-      None
-    try:
-      gender = data["gender"]
-      actor.gender = gender
-    except:
-      None
-    actor.update()
-    formatted_actor = actor.format()
-    return jsonify({
-      'success': True,
-      'actor':formatted_actor
-      })
+      abort(422)
 
   @app.route('/movies/<int:movie_id>', methods = ['PATCH'])
   def patch_movie(movie_id):
-    data = request.get_json()
-    movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
     try:
-      title = data["title"]
-      movie.title = title
+      data = request.get_json()
+      movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+      if movie == None:
+        abort(404)
+      try:
+        title = data["title"]
+        movie.title = title
+      except:
+        None
+      try:
+        release_date = data["release_date"]
+        movie.release_date = release_date
+      except:
+        None
+      try:
+        movie.update()
+      except:
+        abort(422)
+      formatted_movie = movie.format()
+      return jsonify({
+        'success': True,
+        'movie':formatted_movie
+        })
     except:
-      None
-    try:
-      release_date = data["release_date"]
-      movie.release_date = release_date
-    except:
-      None
-    movie.update()
-    formatted_movie = movie.format()
-    return jsonify({
-      'success': True,
-      'movie':formatted_movie
-      })
+      abort(422)
   '''
   DELETE /actors and /movies 
   '''
@@ -117,7 +138,12 @@ def create_app(test_config=None):
   def delete_actor(actor_id):
     data = request.get_json()
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
-    actor.delete()
+    if actor == None:
+      abort(404)
+    try:
+      actor.delete()
+    except:
+      abort(422)
     return jsonify({
       'success': True,
       'deleted':1
@@ -127,11 +153,35 @@ def create_app(test_config=None):
   def delete_movie(movie_id):
     data = request.get_json()
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
-    movie.delete()
+    if movie == None:
+      abort(404)
+    try:
+      movie.delete()
+    except:
+      abort(422)
     return jsonify({
       'success': True,
       'deleted':1
       })
+
+  '''
+  Error handler
+  '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success": False, 
+      "error": 404,
+      "message": "not found"
+      }), 404
+
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      "success": False, 
+      "error": 422,
+      "message": "unprocessable"
+      }), 422
 
   return app
 
