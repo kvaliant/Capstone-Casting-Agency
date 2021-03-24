@@ -4,6 +4,7 @@ import json
 import os
 
 database_path = "postgres://niflpdzmddyvym:d15bd058036354d888956bdb712df348f9905077991a725b1f3a81da259ac811@ec2-54-211-176-156.compute-1.amazonaws.com:5432/d2ups5itukv3f3"
+#database_path = "postgres://{}:{}@{}/{}".format('postgres','admin','localhost:5432', "capstone")
 
 db = SQLAlchemy()
 
@@ -16,7 +17,7 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
+    #db.create_all()
 
 
 '''
