@@ -10,6 +10,9 @@ casting_assistant = os.environ.get('ASSISTANT')
 casting_director = os.environ.get('DIRECTOR')
 executive_producer = os.environ.get('PRODUCER')
 
+database_path = os.environ.get('DATABASE_URL')
+#'postgres://niflpdzmddyvym:d15bd058036354d888956bdb712df348f9905077991a725b1f3a81da259ac811@ec2-54-211-176-156.compute-1.amazonaws.com:5432/d2ups5itukv3f3'
+
 '''
 Tests:
     One test for success behavior of each endpoint
@@ -21,8 +24,7 @@ class CapstoneTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "capstone"
-        self.database_path = "postgres://{}:{}@{}/{}".format('postgres','admin','localhost:5432', self.database_name)
+        self.database_path = database_path 
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context

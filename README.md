@@ -86,6 +86,9 @@ The token can be retrived by following these steps:
     Email   : kxsmgkotguzncspvpb@wqcefp.com
     Pass    : !1Qwerty
 
+#### GET '/'
+Redirect to Auth0 login page
+https://fsnd21.us.auth0.com/authorize?audience=capstone&response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck&redirect_uri=https://127.0.0.1:8080/login-result
 
 #### GET '/movies'
 Returns a list of all available movies and a success value

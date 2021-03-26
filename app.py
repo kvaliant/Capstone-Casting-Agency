@@ -15,6 +15,13 @@ def create_app(test_config=None):
   migrate = Migrate(app, db)
 
   '''
+  GET /
+  '''
+  @app.route('/', methods= ['GET'])
+  def login():
+    return redirect('https://fsnd21.us.auth0.com/authorize?audience=capstone&response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck&redirect_uri=https://127.0.0.1:8080/login-result')
+  
+  '''
   GET /actors and /movies 
   '''
   @app.route('/actors', methods = ['GET'])
@@ -77,11 +84,6 @@ def create_app(test_config=None):
   '''
   PATCH /actors and /movies 
   '''
-  @app.route('/')
-  def login():
-    return redirect('https://fsnd21.us.auth0.com/authorize?audience=capstone&response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck&redirect_uri=https://127.0.0.1:8080/login-result')
-    
-
   @app.route('/actors/<int:actor_id>', methods = ['PATCH'])
   @requires_auth('patch:actors')
   def patch_actor(payload, actor_id):
