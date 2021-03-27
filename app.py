@@ -20,18 +20,13 @@ def create_app(test_config=None):
     '''
     @app.route('/', methods=['GET'])
     def login():
-        return redirect('https://fsnd21.us.auth0.com/\
-            authorize?audience=capstone\
-            &response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck\
-            &redirect_uri=https://127.0.0.1:8080/login-result')
+        return redirect('https://fsnd21.us.auth0.com/authorize?audience=capstone&response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck&redirect_uri=https://127.0.0.1:8080/login-result')
 
     @app.route('/login-result')
     def login_result():
         return jsonify({
             'success': True,
-            'instructions': 'You have received your token, \
-                now please copy the access_token variable \
-                into setup.sh as a token and re \'source setup.sh\' '
+            'instructions': 'You have received your token, now please copy the access_token variable into setup.sh as a token and re \'source setup.sh\' '
         })
 
     '''
