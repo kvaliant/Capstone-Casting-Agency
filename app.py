@@ -20,7 +20,7 @@ def create_app(test_config=None):
     '''
     @app.route('/', methods=['GET'])
     def login():
-        return redirect('https://fsnd21.us.auth0.com/authorize?audience=capstone&response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck&redirect_uri=https://127.0.0.1:8080/login-result')
+        return redirect('https://fsnd21.us.auth0.com/authorize?audience=capstone&response_type=token&client_id=L5gNkzVzN9bJlTLDLuWt9MQChBDCo7Ck&redirect_uri=https://capstone2121.herokuapp.com/login-result')
 
     @app.route('/login-result')
     def login_result():
